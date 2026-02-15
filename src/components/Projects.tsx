@@ -1,12 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { ExternalLink, X, Eye } from "lucide-react";
 
 import chempImg from "@/assets/projects/chemp.png";
 import gaiaImg from "@/assets/projects/gaia.png";
 import marsadImg from "@/assets/projects/marsad.png";
 import narsaImg from "@/assets/projects/narsa.png";
+import ftTranscendenceImg from "@/assets/projects/ft_transcendence.png";
 
 const projects = [
   {
@@ -80,6 +81,24 @@ const projects = [
     image: marsadImg,
     color: "from-amber-500/20 to-orange-600/20",
     link: "https://marssad.ma",
+  },
+  {
+    title: "ft_transcendence",
+    subtitle: "Real-Time Multiplayer Ping Pong Web App",
+    organization: "42 Network — Common Core",
+    role: "Full-Stack Developer",
+    description:
+      "A collaborative capstone project building a real-time multiplayer ping pong application from design to production. Features live gameplay via WebSockets, user authentication, chat, and a fully containerized architecture with Docker.",
+    highlights: [
+      "Designed full UI/UX in Figma before implementation",
+      "Built NestJS backend with Prisma ORM & PostgreSQL for type-safe data access",
+      "Implemented real-time gameplay & chat using WebSocket servers",
+      "Containerized the full stack (frontend, backend, database) with Docker Compose",
+    ],
+    tags: ["NestJS", "Next.js", "Prisma", "PostgreSQL", "WebSocket", "Docker"],
+    image: ftTranscendenceImg,
+    color: "from-cyan-500/20 to-green-600/20",
+    link: null,
   },
 ];
 
@@ -174,6 +193,65 @@ const ProjectCard = ({
   );
 };
 
+const SamuraiLoader = ({ onComplete }: { onComplete: () => void }) => {
+  useEffect(() => {
+    const timer = setTimeout(onComplete, 900);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-background/95 backdrop-blur-md"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div className="relative flex flex-col items-center gap-8">
+        <div className="relative w-12 h-12">
+          {[0, 1, 2, 3].map((i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 rounded-full bg-primary"
+              style={{ top: "50%", left: "50%", marginTop: -4, marginLeft: -4 }}
+              animate={{
+                x: [
+                  Math.cos((i * Math.PI) / 2) * 20,
+                  Math.cos((i * Math.PI) / 2 + Math.PI / 2) * 20,
+                  Math.cos((i * Math.PI) / 2 + Math.PI) * 20,
+                  Math.cos((i * Math.PI) / 2 + (3 * Math.PI) / 2) * 20,
+                  Math.cos((i * Math.PI) / 2 + 2 * Math.PI) * 20,
+                ],
+                y: [
+                  Math.sin((i * Math.PI) / 2) * 20,
+                  Math.sin((i * Math.PI) / 2 + Math.PI / 2) * 20,
+                  Math.sin((i * Math.PI) / 2 + Math.PI) * 20,
+                  Math.sin((i * Math.PI) / 2 + (3 * Math.PI) / 2) * 20,
+                  Math.sin((i * Math.PI) / 2 + 2 * Math.PI) * 20,
+                ],
+                scale: [1, 0.8, 1, 0.8, 1],
+                opacity: [1, 0.5, 1, 0.5, 1],
+              }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "linear" }}
+            />
+          ))}
+          <motion.div
+            className="absolute top-1/2 left-1/2 w-1.5 h-1.5 -mt-[3px] -ml-[3px] rounded-full bg-primary/40"
+            animate={{ scale: [1, 1.8, 1], opacity: [0.4, 0.1, 0.4] }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
+        <motion.div
+          className="h-[1px] bg-primary/40 rounded-full"
+          initial={{ width: 0 }}
+          animate={{ width: [0, 80, 60, 80] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+    </motion.div>
+  );
+};
+
 const ProjectModal = ({
   project,
   onClose,
@@ -181,6 +259,19 @@ const ProjectModal = ({
   project: Project;
   onClose: () => void;
 }) => {
+  // Lock body scroll
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
+  // Close on Escape
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -205,9 +296,9 @@ const ProjectModal = ({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 bg-background/60 backdrop-blur-sm rounded-full p-2 border border-border hover:border-primary/40 hover:bg-primary/10 transition-all duration-300 group"
+          className="absolute top-3 right-3 z-10 p-1.5 transition-all duration-300 group"
         >
-          <X className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+          <X className="h-5 w-5 text-foreground/70 transition-all duration-300 group-hover:text-primary group-hover:scale-125 group-hover:rotate-90 group-hover:drop-shadow-[0_0_8px_hsl(var(--primary))]" />
         </button>
 
         {/* Hero image */}
@@ -322,6 +413,16 @@ const Projects = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [loadingProject, setLoadingProject] = useState<Project | null>(null);
+
+  const handleSelect = useCallback((project: Project) => {
+    setLoadingProject(project);
+  }, []);
+
+  const handleLoaderComplete = useCallback(() => {
+    setSelectedProject(loadingProject);
+    setLoadingProject(null);
+  }, [loadingProject]);
 
   return (
     <>
@@ -348,12 +449,18 @@ const Projects = () => {
                 project={project}
                 index={index}
                 isInView={isInView}
-                onSelect={() => setSelectedProject(project)}
+                onSelect={() => handleSelect(project)}
               />
             ))}
           </div>
         </div>
       </section>
+
+      <AnimatePresence>
+        {loadingProject && (
+          <SamuraiLoader onComplete={handleLoaderComplete} />
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {selectedProject && (
