@@ -46,7 +46,7 @@ const Contact = () => {
   const socialLinks = [
     { icon: Github, href: "https://github.com/ahammout", label: "GitHub" },
     { icon: Linkedin, href: "https://www.linkedin.com/in/aissam-hammoutane-9968341b8/", label: "LinkedIn" },
-    { icon: Instagram, href: "https://www.instagram.com/aissam_hammoutane/", label: "Instagram" },
+    { icon: Instagram, href: "https://www.instagram.com/aissam.hammoutane/", label: "Instagram" },
   ];
 
   return (
