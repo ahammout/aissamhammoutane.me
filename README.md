@@ -12,24 +12,19 @@ This project is built with:
 - **shadcn-ui** - High-quality UI components
 - **Tailwind CSS** - Utility-first CSS framework
 
-## Getting Started
+## Live Demo
 
-To run this project locally:
+You can view the live version of this portfolio at:
 
-```sh
-# Clone the repository
-git clone https://github.com/ahammout/aissamhammoutane.me.git
+- https://aissamhammoutane.me
 
-# Navigate to the project directory
-cd aissamhammoutane.me
+## Feedback & Contact
 
-# Install dependencies
-npm i
+If you have any notes or suggestions I'd love to hear from you. You can:
 
-# Start the development server
-npm run dev
-```
+- Use the Contact page on the site to send a message.
+- Open an issue or submit feedback on the repository: https://github.com/ahammout/aissamhammoutane.me
 
----
+Thank you for visiting — your feedback helps me improve!
 
 **© 2026 Aissam Hammoutane** - All rights reserved
