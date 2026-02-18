@@ -121,10 +121,10 @@ const ProjectCard = ({
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: index * 0.15 }}
       onClick={onSelect}
-      className="group relative overflow-hidden rounded-2xl bg-card border border-border hover:border-primary/30 transition-all duration-500 flex flex-col cursor-pointer"
+      className="group relative overflow-hidden rounded-xl bg-card border border-border hover:border-primary/30 transition-all duration-500 flex flex-col cursor-pointer"
     >
       {/* Project image */}
-      <div className={`aspect-video bg-gradient-to-br ${project.color} relative overflow-hidden`}>
+      <div className={`aspect-[16/8] bg-gradient-to-br ${project.color} relative overflow-hidden`}>
         <img
           src={project.image}
           alt={project.title}
@@ -133,28 +133,24 @@ const ProjectCard = ({
         <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-all duration-500 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            whileHover={{ opacity: 1, scale: 1 }}
-            className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          >
-            <div className="bg-background/80 backdrop-blur-sm rounded-full p-3 border border-primary/30 shadow-lg shadow-primary/20">
-              <Eye className="w-5 h-5 text-primary" />
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="bg-background/80 backdrop-blur-sm rounded-full p-2.5 border border-primary/30 shadow-lg shadow-primary/20">
+              <Eye className="w-4 h-4 text-primary" />
             </div>
-          </motion.div>
+          </div>
         </div>
-        <div className="absolute bottom-3 left-4 right-4">
-          <span className="text-xs px-2 py-1 rounded-full bg-primary/20 text-primary backdrop-blur-sm font-medium">
+        <div className="absolute bottom-2.5 left-3 right-3">
+          <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary backdrop-blur-sm font-medium">
             {project.organization}
           </span>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-5 flex flex-col flex-1">
-        <div className="flex items-start justify-between mb-1">
+      <div className="p-4 flex flex-col flex-1">
+        <div className="flex items-start justify-between mb-0.5">
           <div className="min-w-0 flex-1">
-            <h3 className="font-display text-xl font-semibold group-hover:text-primary transition-colors truncate">
+            <h3 className="font-display text-lg font-semibold group-hover:text-primary transition-colors truncate">
               {project.title}
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">{project.role}</p>
@@ -167,22 +163,22 @@ const ProjectCard = ({
               onClick={(e) => e.stopPropagation()}
               className="text-muted-foreground hover:text-foreground transition-colors ml-2 flex-shrink-0"
             >
-              <ExternalLink className="w-5 h-5" />
+              <ExternalLink className="w-4 h-4" />
             </a>
           )}
         </div>
 
-        <p className="text-sm font-medium text-foreground/80 mb-2">{project.subtitle}</p>
-        <p className="text-muted-foreground text-sm mb-3 leading-relaxed line-clamp-3">
+        <p className="text-sm font-medium text-foreground/80 mb-1.5">{project.subtitle}</p>
+        <p className="text-muted-foreground text-xs mb-3 leading-relaxed line-clamp-2">
           {project.description}
         </p>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mt-auto">
+        <div className="flex flex-wrap gap-1 mt-auto">
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium"
+              className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium"
             >
               {tag}
             </span>
@@ -291,7 +287,7 @@ const ProjectModal = ({
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ duration: 0.4, type: "spring", bounce: 0.2 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-card border border-primary/20 shadow-2xl shadow-primary/10"
+        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-card border border-primary/20 shadow-2xl shadow-primary/10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
         {/* Close button */}
         <button
@@ -308,21 +304,24 @@ const ProjectModal = ({
             alt={project.title}
             className="w-full h-full object-cover object-top"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/10 to-transparent" />
+          {/* Organization badge on image */}
+          <div className="absolute bottom-4 left-6">
+            <span className="text-xs px-2.5 py-1 rounded-full bg-primary/15 text-primary font-medium backdrop-blur-sm">
+              {project.organization}
+            </span>
+          </div>
         </div>
 
         {/* Content */}
-        <div className="p-6 sm:p-8 -mt-12 relative">
+        <div className="p-6 sm:p-8 relative">
           <div className="flex items-start justify-between gap-4 mb-1">
             <div>
-              <span className="text-xs px-2.5 py-1 rounded-full bg-primary/15 text-primary font-medium">
-                {project.organization}
-              </span>
               <motion.h3
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.15 }}
-                className="font-display text-2xl sm:text-3xl font-bold mt-3 text-foreground"
+                className="font-display text-2xl sm:text-3xl font-bold text-foreground"
               >
                 {project.title}
               </motion.h3>
@@ -333,7 +332,7 @@ const ProjectModal = ({
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mt-8 flex-shrink-0"
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors flex-shrink-0"
               >
                 <ExternalLink className="w-4 h-4" />
                 <span className="hidden sm:inline">Visit</span>
