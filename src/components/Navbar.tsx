@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import HeartbeatButton from "./HeartbeatButton";
@@ -9,20 +9,39 @@ const navLinks = [
   { name: "About", href: "#about" },
   { name: "Projects", href: "#projects" },
   { name: "Skills", href: "#skills" },
+  { name: "Education", href: "#education" },
   { name: "Contact", href: "#contact" },
 ];
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+      if (isOpen) setIsOpen(false);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isOpen]);
+
+  // Close menu on click outside
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (
+        menuRef.current && !menuRef.current.contains(e.target as Node) &&
+        buttonRef.current && !buttonRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [isOpen]);
 
   return (
     <motion.nav
@@ -55,6 +74,7 @@ const Navbar = () => {
 
         {/* Mobile toggle */}
         <button
+          ref={buttonRef}
           className="md:hidden text-foreground"
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -63,31 +83,35 @@ const Navbar = () => {
       </div>
 
       {/* Mobile menu */}
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          className="md:hidden bg-background/95 backdrop-blur-lg border-b border-border"
-        >
-          <div className="px-6 py-4 flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-300 text-sm font-medium py-2"
-              >
-                {link.name}
-              </a>
-            ))}
-            <div className="pt-2 border-t border-border flex items-center justify-between">
-              <HeartbeatButton />
-              <ThemeToggle />
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            ref={menuRef}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden bg-background/95 backdrop-blur-lg border-b border-border overflow-hidden"
+          >
+            <div className="px-6 py-4 flex flex-col gap-4">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-muted-foreground hover:text-foreground transition-colors duration-300 text-sm font-medium py-2"
+                >
+                  {link.name}
+                </a>
+              ))}
+              <div className="pt-2 border-t border-border flex items-center justify-between">
+                <HeartbeatButton />
+                <ThemeToggle />
+              </div>
             </div>
-          </div>
-        </motion.div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 };

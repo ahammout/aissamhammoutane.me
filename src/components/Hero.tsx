@@ -24,8 +24,8 @@ const Hero = () => {
           className="font-display text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight"
         >
           Software{" "}
-          <span className="text-gradient">Developer</span>
-          <br />& Engineer
+          <span className="text-gradient">Engineer</span>
+          <br />& Developer
         </motion.h1>
 
         <motion.p

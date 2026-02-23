@@ -1,108 +1,77 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState, useEffect, useCallback } from "react";
-import { ExternalLink, X, Eye } from "lucide-react";
+import { ExternalLink, X, Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { projects, type Project } from "@/lib/projects-data";
 
-import chempImg from "@/assets/projects/chemp.png";
-import gaiaImg from "@/assets/projects/gaia.png";
-import marsadImg from "@/assets/projects/marsad.png";
-import narsaImg from "@/assets/projects/narsa.png";
-import ftTranscendenceImg from "@/assets/projects/ft_transcendence.png";
+const ImageCarousel = ({ images, title }: { images: string[]; title: string }) => {
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
 
-const projects = [
-  {
-    title: "Chemp.AI",
-    subtitle: "AI-Powered Communication & Wellbeing Platform",
-    organization: "Startup — Spain",
-    role: "Backend Architect & Full-Stack Developer",
-    description:
-      "An innovative platform leveraging AI to provide professional communication coaching and wellbeing support. Combines conversational AI, emotional intelligence assessment, and health tracking into a comprehensive solution.",
-    highlights: [
-      "Architected complete NestJS backend with 17-table PostgreSQL schema",
-      "Integrated 3 specialized AI assistants (GPT-4o) with token optimization",
-      "Built 9 feature modules: AI messaging, role-play coaching, wellbeing tracker",
-      "Implemented Stripe subscriptions, push notifications & OAuth2 auth",
-    ],
-    tags: ["NestJS", "TypeScript", "PostgreSQL", "OpenAI", "Stripe", "Redis", "Docker"],
-    image: chempImg,
-    color: "from-emerald-500/20 to-teal-600/20",
-    link: null,
-  },
-  {
-    title: "NARSA",
-    subtitle: "Digital Driving Exam Platform",
-    organization: "DICE — UM6P",
-    role: "Full-Stack Developer",
-    description:
-      "A national digital platform modernizing Morocco's practical driving exam process. Integrates advanced digital systems into test vehicles with a comprehensive admin platform connected to all driving centers nationwide.",
-    highlights: [
-      "Developed real-time exam monitoring dashboard across all driving centers",
-      "Built digital evaluation system with standardized scoring & e-signatures",
-      "Implemented center management, vehicle fleet tracking & examiner scheduling",
-      "Created analytics dashboards with data visualization & reporting exports",
-    ],
-    tags: ["React", "REST API", "WebSocket", "PostgreSQL", "Real-time"],
-    image: narsaImg,
-    color: "from-blue-500/20 to-indigo-600/20",
-    link: null,
-  },
-  {
-    title: "GAIA",
-    subtitle: "AI Assistant for Industrial Design",
-    organization: "DICE — UM6P",
-    role: "Backend Architect",
-    description:
-      "An AI-powered platform revolutionizing industrial schema design and simulation. Enables users to create, design, and simulate complex industrial systems through an intuitive digital workspace with AI-generated configurations.",
-    highlights: [
-      "Designed scalable microservices architecture with API Gateway pattern",
-      "Built AI integration layer for automated schema generation & optimization",
-      "Implemented polyglot persistence with relational & document databases",
-      "Developed async job processing for compute-intensive AI operations",
-    ],
-    tags: ["Microservices", "API Gateway", "AI/ML", "Docker", "Message Queues"],
-    image: gaiaImg,
-    color: "from-purple-500/20 to-pink-600/20",
-    link: null,
-  },
-  {
-    title: "MARSSAD",
-    subtitle: "Labor Market Intelligence Platform",
-    organization: "DICE — UM6P",
-    role: "Full-Stack Developer",
-    description:
-      "A comprehensive digital platform providing intelligent analysis for Morocco's labor market. Delivers interactive dashboards, AI digital assistants, and real-time data insights for employment research and policy decisions.",
-    highlights: [
-      "Developed dynamic forms system with configurable builder & conditional logic",
-      "Extended AI capabilities with sector-specific digital assistants",
-      "Built ETL pipelines for real-time data integration from public institutions",
-      "Modernized tech stack with library migrations & performance optimizations",
-    ],
-    tags: ["JavaScript", "REST API", "ETL", "Data Viz", "NLP", "WebSocket"],
-    image: marsadImg,
-    color: "from-amber-500/20 to-orange-600/20",
-    link: "https://marssad.ma",
-  },
-  {
-    title: "ft_transcendence",
-    subtitle: "Real-Time Multiplayer Ping Pong Web App",
-    organization: "42 Network — Common Core",
-    role: "Full-Stack Developer",
-    description:
-      "A collaborative capstone project building a real-time multiplayer ping pong application from design to production. Features live gameplay via WebSockets, user authentication, chat, and a fully containerized architecture with Docker.",
-    highlights: [
-      "Designed full UI/UX in Figma before implementation",
-      "Built NestJS backend with Prisma ORM & PostgreSQL for type-safe data access",
-      "Implemented real-time gameplay & chat using WebSocket servers",
-      "Containerized the full stack (frontend, backend, database) with Docker Compose",
-    ],
-    tags: ["NestJS", "Next.js", "Prisma", "PostgreSQL", "WebSocket", "Docker"],
-    image: ftTranscendenceImg,
-    color: "from-cyan-500/20 to-green-600/20",
-    link: null,
-  },
-];
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const timer = setInterval(() => {
+      setDirection(1);
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [images.length]);
 
-type Project = (typeof projects)[0];
+  const go = (dir: number) => {
+    setDirection(dir);
+    setCurrent((prev) => (prev + dir + images.length) % images.length);
+  };
+
+  const variants = {
+    enter: (d: number) => ({ x: d > 0 ? 300 : -300, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (d: number) => ({ x: d > 0 ? -300 : 300, opacity: 0 }),
+  };
+
+  return (
+    <div className="relative w-full h-full overflow-hidden group/carousel">
+      <AnimatePresence initial={false} custom={direction} mode="popLayout">
+        <motion.img
+          key={current}
+          src={images[current]}
+          alt={`${title} screenshot ${current + 1}`}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.4, ease: "easeInOut" }}
+          className="absolute inset-0 w-full h-full object-cover object-top"
+        />
+      </AnimatePresence>
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={(e) => { e.stopPropagation(); go(-1); }}
+            className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 hover:bg-background/80"
+          >
+            <ChevronLeft className="w-4 h-4 text-foreground" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); go(1); }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 hover:bg-background/80"
+          >
+            <ChevronRight className="w-4 h-4 text-foreground" />
+          </button>
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); setDirection(i > current ? 1 : -1); setCurrent(i); }}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === current ? "bg-primary w-4" : "bg-foreground/40"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 const ProjectCard = ({
   project,
@@ -123,30 +92,23 @@ const ProjectCard = ({
       onClick={onSelect}
       className="group relative overflow-hidden rounded-xl bg-card border border-border hover:border-primary/30 transition-all duration-500 flex flex-col cursor-pointer"
     >
-      {/* Project image */}
       <div className={`aspect-[16/8] bg-gradient-to-br ${project.color} relative overflow-hidden`}>
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-full object-cover object-top opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-all duration-500 flex items-center justify-center">
+        <ImageCarousel images={project.images} title={project.title} />
+        <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-all duration-500 flex items-center justify-center pointer-events-none">
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div className="bg-background/80 backdrop-blur-sm rounded-full p-2.5 border border-primary/30 shadow-lg shadow-primary/20">
               <Eye className="w-4 h-4 text-primary" />
             </div>
           </div>
         </div>
-        <div className="absolute bottom-2.5 left-3 right-3">
+        <div className="absolute bottom-2.5 left-3 right-3 pointer-events-none">
           <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary backdrop-blur-sm font-medium">
             {project.organization}
           </span>
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-4 flex flex-col flex-1">
         <div className="flex items-start justify-between mb-0.5">
           <div className="min-w-0 flex-1">
@@ -167,13 +129,10 @@ const ProjectCard = ({
             </a>
           )}
         </div>
-
         <p className="text-sm font-medium text-foreground/80 mb-1.5">{project.subtitle}</p>
         <p className="text-muted-foreground text-xs mb-3 leading-relaxed line-clamp-2">
           {project.description}
         </p>
-
-        {/* Tags */}
         <div className="flex flex-wrap gap-1 mt-auto">
           {project.tags.map((tag) => (
             <span
@@ -255,13 +214,11 @@ const ProjectModal = ({
   project: Project;
   onClose: () => void;
 }) => {
-  // Lock body scroll
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
   }, []);
 
-  // Close on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", handler);
@@ -277,10 +234,8 @@ const ProjectModal = ({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
       onClick={onClose}
     >
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-background/80 backdrop-blur-md" />
 
-      {/* Modal */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -289,7 +244,6 @@ const ProjectModal = ({
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-card border border-primary/20 shadow-2xl shadow-primary/10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 z-10 p-1.5 transition-all duration-300 group"
@@ -297,23 +251,16 @@ const ProjectModal = ({
           <X className="h-5 w-5 text-foreground/70 transition-all duration-300 group-hover:text-primary group-hover:scale-125 group-hover:rotate-90 group-hover:drop-shadow-[0_0_8px_hsl(var(--primary))]" />
         </button>
 
-        {/* Hero image */}
         <div className={`aspect-[21/9] bg-gradient-to-br ${project.color} relative overflow-hidden rounded-t-2xl`}>
-          <img
-            src={project.image}
-            alt={project.title}
-            className="w-full h-full object-cover object-top"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/10 to-transparent" />
-          {/* Organization badge on image */}
-          <div className="absolute bottom-4 left-6">
+          <ImageCarousel images={project.images} title={project.title} />
+          <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/10 to-transparent pointer-events-none" />
+          <div className="absolute bottom-4 left-6 pointer-events-none">
             <span className="text-xs px-2.5 py-1 rounded-full bg-primary/15 text-primary font-medium backdrop-blur-sm">
               {project.organization}
             </span>
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-6 sm:p-8 relative">
           <div className="flex items-start justify-between gap-4 mb-1">
             <div>
@@ -340,33 +287,17 @@ const ProjectModal = ({
             )}
           </div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg font-medium text-foreground/80 mt-2"
-          >
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-lg font-medium text-foreground/80 mt-2">
             {project.subtitle}
           </motion.p>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.25 }}
-            className="text-muted-foreground mt-4 leading-relaxed"
-          >
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="text-muted-foreground mt-4 leading-relaxed">
             {project.description}
           </motion.p>
 
-          {/* Divider */}
           <div className="my-6 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-          {/* Key contributions */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <h4 className="text-sm font-semibold text-primary uppercase tracking-widest mb-4">
               ⚔️ Key Contributions
             </h4>
@@ -386,18 +317,9 @@ const ProjectModal = ({
             </ul>
           </motion.div>
 
-          {/* Tags */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="flex flex-wrap gap-2 mt-6"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="flex flex-wrap gap-2 mt-6">
             {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/10"
-              >
+              <span key={tag} className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/10">
                 {tag}
               </span>
             ))}
@@ -456,17 +378,12 @@ const Projects = () => {
       </section>
 
       <AnimatePresence>
-        {loadingProject && (
-          <SamuraiLoader onComplete={handleLoaderComplete} />
-        )}
+        {loadingProject && <SamuraiLoader onComplete={handleLoaderComplete} />}
       </AnimatePresence>
 
       <AnimatePresence>
         {selectedProject && (
-          <ProjectModal
-            project={selectedProject}
-            onClose={() => setSelectedProject(null)}
-          />
+          <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
         )}
       </AnimatePresence>
     </>
