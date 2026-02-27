@@ -138,4 +138,12 @@
   .hover-lift:hover {
     transform: translateY(-4px);
   }
+
+  /* Image protection */
+  .protected-img {
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    -webkit-touch-callout: none;
+  }
 }

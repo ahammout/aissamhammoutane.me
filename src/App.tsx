@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { SwordTransitionProvider } from "./components/SwordTransitionProvider";
+import { I18nProvider } from "./lib/i18n";
 import Index from "./pages/Index";
 import Blog from "./pages/Blog";
 import ArticleDetail from "./pages/ArticleDetail";
@@ -15,6 +16,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+      <I18nProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -30,6 +32,7 @@ const App = () => (
           </SwordTransitionProvider>
         </BrowserRouter>
       </TooltipProvider>
+      </I18nProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
