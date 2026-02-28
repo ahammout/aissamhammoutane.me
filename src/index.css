@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -36,7 +36,6 @@
 
     --radius: 0.25rem;
 
-    /* Custom tokens - Japanese inspired */
     --gradient-primary: linear-gradient(135deg, hsl(0 45% 45%), hsl(0 40% 35%));
     --gradient-subtle: linear-gradient(135deg, hsl(30 15% 95%), hsl(30 10% 90%));
     --glow-primary: 0 0 30px hsl(0 45% 45% / 0.15);
@@ -72,7 +71,6 @@
     --input: 0 0% 16%;
     --ring: 0 55% 50%;
 
-    /* Custom tokens - Japanese inspired */
     --gradient-primary: linear-gradient(135deg, hsl(0 55% 50%), hsl(0 45% 40%));
     --gradient-subtle: linear-gradient(135deg, hsl(0 0% 8%), hsl(0 0% 11%));
     --glow-primary: 0 0 30px hsl(0 55% 50% / 0.25);
@@ -87,6 +85,7 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -96,6 +95,14 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
+  }
+
+  /* Mobile-specific font sizing */
+  @media (max-width: 639px) {
+    body {
+      font-size: 14px;
+      line-height: 1.6;
+    }
   }
 }
 
@@ -145,5 +152,19 @@
     user-select: none;
     pointer-events: none;
     -webkit-touch-callout: none;
+  }
+
+  /* Article typography with Lora */
+  .prose-article {
+    font-family: 'Lora', serif;
+  }
+  .prose-article h1,
+  .prose-article h2,
+  .prose-article h3 {
+    font-family: 'Playfair Display', serif;
+  }
+  .prose-article p,
+  .prose-article li {
+    font-family: 'Lora', serif;
   }
 }

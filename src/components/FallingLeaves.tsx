@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Leaf {
   id: number;
@@ -12,8 +13,10 @@ interface Leaf {
 
 const FallingLeaves = () => {
   const [leaves, setLeaves] = useState<Leaf[]>([]);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    if (isMobile) return;
     const newLeaves: Leaf[] = Array.from({ length: 15 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
@@ -23,7 +26,9 @@ const FallingLeaves = () => {
       opacity: 0.15 + Math.random() * 0.2,
     }));
     setLeaves(newLeaves);
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">

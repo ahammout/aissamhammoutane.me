@@ -9,10 +9,12 @@ const ProtectedImage = ({ src, alt, className }: { src: string; alt: string; cla
   <img
     src={src}
     alt={alt}
-    className={className}
+    className={`${className || ''} protected-img`}
     draggable={false}
     onContextMenu={(e) => e.preventDefault()}
-    style={{ WebkitUserSelect: "none", userSelect: "none", pointerEvents: "auto" }}
+    onDragStart={(e) => e.preventDefault()}
+    onTouchStart={(e) => { if (e.touches.length > 1) e.preventDefault(); }}
+    style={{ WebkitUserSelect: "none", userSelect: "none", pointerEvents: "auto", WebkitTouchCallout: "none" } as React.CSSProperties}
   />
 );
 
@@ -99,23 +101,23 @@ const ProjectCard = ({ project, index, isInView, onSelect }: { project: Project;
           <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary backdrop-blur-sm font-medium">{project.organization}</span>
         </div>
       </div>
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-3 sm:p-4 flex flex-col flex-1">
         <div className="flex items-start justify-between mb-0.5">
           <div className="min-w-0 flex-1">
-            <h3 className="font-display text-lg font-semibold group-hover:text-primary transition-colors truncate">{project.title}</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">{project.role}</p>
+            <h3 className="font-display text-sm sm:text-base md:text-lg font-semibold group-hover:text-primary transition-colors truncate">{project.title}</h3>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{project.role}</p>
           </div>
           {project.link && (
             <a href={project.link} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-muted-foreground hover:text-foreground transition-colors ml-2 flex-shrink-0">
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </a>
           )}
         </div>
-        <p className="text-sm font-medium text-foreground/80 mb-1.5">{t(project.subtitleKey)}</p>
-        <p className="text-muted-foreground text-xs mb-3 leading-relaxed line-clamp-2">{t(project.descriptionKey)}</p>
+        <p className="text-xs sm:text-sm font-medium text-foreground/80 mb-1">{t(project.subtitleKey)}</p>
+        <p className="text-muted-foreground text-[10px] sm:text-xs mb-2 sm:mb-3 leading-relaxed line-clamp-2">{t(project.descriptionKey)}</p>
         <div className="flex flex-wrap gap-1 mt-auto">
           {project.tags.map((tag) => (
-            <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{tag}</span>
+            <span key={tag} className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{tag}</span>
           ))}
         </div>
       </div>
@@ -240,16 +242,16 @@ const Projects = () => {
 
   return (
     <>
-      <section id="projects" className="py-24 sm:py-32 px-4 sm:px-6 overflow-x-hidden" ref={ref}>
+      <section id="projects" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 overflow-x-hidden" ref={ref}>
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
-            className="text-center mb-10 sm:mb-14"
+            className="text-center mb-8 sm:mb-10 md:mb-14"
           >
-            <p className="text-primary font-medium tracking-widest uppercase text-sm mb-4">{t("projects.label")}</p>
-            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold">
+            <p className="text-primary font-medium tracking-widest uppercase text-xs sm:text-sm mb-3">{t("projects.label")}</p>
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
               {t("projects.title1")} <span className="text-gradient">{t("projects.title2")}</span>
             </h2>
           </motion.div>
@@ -259,7 +261,7 @@ const Projects = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10 sm:mb-12"
+            className="flex flex-wrap justify-center gap-1.5 sm:gap-2 md:gap-3 mb-6 sm:mb-8 md:mb-12"
           >
             {[t("projects.all"), ...projectCategories].map((cat) => {
               const catKey = cat === t("projects.all") ? "All" : cat;
@@ -268,7 +270,7 @@ const Projects = () => {
                 <button
                   key={cat}
                   onClick={() => handleCategoryChange(catKey)}
-                  className={`relative px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
+                  className={`relative px-2.5 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
                     isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -292,7 +294,7 @@ const Projects = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8"
             >
               {visibleProjects.map((project, index) => (
                 <ProjectCard key={project.title} project={project} index={index} isInView={isInView} onSelect={() => handleSelect(project)} />
