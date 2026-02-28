@@ -17,7 +17,7 @@ const Footer = () => {
   const socialLinks = [
     { icon: Github, href: "https://github.com/ahammout", label: "GitHub", handle: "ahammout" },
     { icon: Linkedin, href: "https://www.linkedin.com/in/aissam-hammoutane-9968341b8/", label: "LinkedIn", handle: "Aissam Hammoutane" },
-    { icon: Instagram, href: "https://www.instagram.com/aissam_hammoutane/", label: "Instagram", handle: "@aissam_hammoutane" },
+    { icon: Instagram, href: "https://www.instagram.com/aissam.hammoutane", label: "Instagram", handle: "@aissam_hammoutane" },
   ];
 
   return (
