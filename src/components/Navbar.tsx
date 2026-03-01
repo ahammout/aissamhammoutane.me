@@ -71,7 +71,7 @@ const Navbar = () => {
         isScrolled ? "bg-background/80 backdrop-blur-lg border-b border-border" : ""
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8 py-3 flex items-center justify-between">
         <a href="#" className="font-display text-lg font-bold text-gradient">
           Aissam Hammoutane
         </a>

@@ -11,18 +11,18 @@ const Footer = () => {
     { key: "nav.skills", href: "#skills" },
     { key: "nav.education", href: "#education" },
     { key: "nav.contact", href: "#contact" },
-    { key: "footer.blog", href: "/blog" },
+    { key: "footer.blog", href: "$blog" },
   ];
 
   const socialLinks = [
     { icon: Github, href: "https://github.com/ahammout", label: "GitHub", handle: "ahammout" },
     { icon: Linkedin, href: "https://www.linkedin.com/in/aissam-hammoutane-9968341b8/", label: "LinkedIn", handle: "Aissam Hammoutane" },
-    { icon: Instagram, href: "https://www.instagram.com/aissam.hammoutane", label: "Instagram", handle: "@aissam_hammoutane" },
+    { icon: Instagram, href: "https://www.instagram.com/aissam_hammoutane/", label: "Instagram", handle: "@aissam_hammoutane" },
   ];
 
   return (
     <footer className="border-t border-border bg-card/50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-8">
           {/* Brand */}
           <div className="col-span-2 sm:col-span-2 lg:col-span-1">
@@ -106,7 +106,7 @@ const Footer = () => {
           <p className="text-muted-foreground text-[10px] sm:text-xs">
             © {new Date().getFullYear()} Aissam Hammoutane. {t("footer.rights")}
           </p>
-          <p className="font-display text-xs sm:text-sm font-bold text-gradient">AH</p>
+          <p className="font-display text-xs sm:text-sm font-bold text-gradient">Aissam Hammoutane</p>
         </div>
       </div>
     </footer>
