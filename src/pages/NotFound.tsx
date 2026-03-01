@@ -6,7 +6,7 @@ import samuraiImg from "@/assets/samurai-404.jpg";
 const NotFound = () => {
   const location = useLocation();
 
-  useEffect(() => {
+  useEffect(() => { 
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
   }, [location.pathname]);
 
